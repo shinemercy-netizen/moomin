@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Music for Moomin</title>
 <style>
-  :root { color-scheme: light; --ink: #1d2433; --paper: #fbf8f1; --line: #cfc8b8; --save: #1e3a8a; --all: #14532d; }
+  :root { color-scheme: light; --ink: #1d2433; --paper: #fbf8f1; --line: #cfc8b8; --save: #1e3a8a; }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body { margin: 0; background: var(--paper); color: var(--ink); font: 22px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 20px 16px 48px; }
@@ -21,10 +21,6 @@
   a.album b { display: block; font-size: 26px; line-height: 1.2; overflow-wrap: anywhere; }
   a.album span { display: block; margin-top: 4px; }
   img.cover { display: block; width: 180px; max-width: 100%; height: auto; border-radius: 8px; margin: 0 0 14px; }
-  .all { margin: 0 0 22px; }
-  button.btn-all { display: block; width: 100%; min-height: 72px; font: inherit; font-weight: 700; color: #fff; background: var(--all); border: 0; border-radius: 12px; cursor: pointer; padding: 8px; }
-  button.btn-all:disabled { background: #6b7280; cursor: default; }
-  .status { margin-top: 10px; font-weight: 700; }
   a.back { display: block; padding: 16px; margin: 0 0 22px; background: var(--ink); color: #fff; border-radius: 12px; text-align: center; font-weight: 700; text-decoration: none; }
   ol { list-style: none; margin: 0 0 22px; padding: 0; }
   li { padding: 16px 0; border-top: 2px solid var(--line); }
@@ -144,12 +140,6 @@ var ALBUMS = [
 ];
 
 var page = document.getElementById('page');
-var GAP_MS = 4000; // time between songs when saving a whole album
-var saving = null; // { album, next } while Save all is running
-var wakeLock = null;
-var statusEl = null;
-var allBtn = null;
-var noteEls = {};
 
 function saveUrl(id) { return 'https://drive.usercontent.google.com/download?id=' + encodeURIComponent(id) + '&export=download'; }
 function el(tag, props, kids) {
@@ -164,9 +154,6 @@ function markSaved(id) { try { localStorage.setItem('saved:' + id, '1'); } catch
 function showFront() {
   document.title = 'Music for Moomin';
   page.textContent = '';
-  allBtn = null;
-  statusEl = null;
-  noteEls = {};
   page.appendChild(el('h1', {}, ['Music for Moomin']));
   page.appendChild(el('p', { className: 'help' }, ['Tap an album to see its songs.']));
   ALBUMS.forEach(function (a, i) {
@@ -181,66 +168,6 @@ function showFront() {
   window.scrollTo(0, 0);
 }
 
-function keepAwake() {
-  try {
-    if (navigator.wakeLock) {
-      navigator.wakeLock.request('screen').then(function (l) { wakeLock = l; }).catch(function () {});
-    }
-  } catch (e) {}
-}
-function letSleep() {
-  try { if (wakeLock) { wakeLock.release(); } } catch (e) {}
-  wakeLock = null;
-}
-
-function saveOne(s) {
-  var a = document.createElement('a');
-  a.href = saveUrl(s.id);
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  markSaved(s.id);
-  if (noteEls[s.id]) { noteEls[s.id].textContent = '✓ You tapped Save for this song.'; }
-}
-
-function showSaving() {
-  if (!allBtn || !statusEl) { return; }
-  var onThisAlbum = saving && allBtn.dataset.album === String(saving.album);
-  allBtn.disabled = !!saving;
-  if (onThisAlbum) {
-    statusEl.textContent = 'Saving song ' + saving.next + ' of ' + ALBUMS[saving.album].songs.length + '. Please keep this page open.';
-  } else if (saving) {
-    statusEl.textContent = 'Another album is still saving. Please wait for it to finish.';
-  }
-}
-
-function saveAll(ai) {
-  if (saving) { return; }
-  var songs = ALBUMS[ai].songs;
-  saving = { album: ai, next: 1 };
-  keepAwake();
-  function step() {
-    saveOne(songs[saving.next - 1]);
-    showSaving();
-    if (saving.next < songs.length) {
-      setTimeout(function () { saving.next++; step(); }, GAP_MS);
-    } else {
-      setTimeout(function () {
-        saving = null;
-        letSleep();
-        if (allBtn) { allBtn.disabled = false; }
-        if (statusEl && allBtn && allBtn.dataset.album === String(ai)) {
-          statusEl.textContent = 'All ' + songs.length + ' songs have started saving. Your phone may need a few more minutes to finish.';
-        } else if (statusEl) {
-          statusEl.textContent = '';
-        }
-      }, GAP_MS);
-    }
-  }
-  step();
-}
-
 function backLink() { return el('a', { className: 'back', href: '#' }, ['← Back to all the music']); }
 
 function showAlbum(ai) {
@@ -251,22 +178,9 @@ function showAlbum(ai) {
   page.appendChild(el('img', { className: 'cover', src: COVERS[a.cover], alt: '' }));
   page.appendChild(el('h1', {}, [a.title]));
   page.appendChild(el('p', { className: 'help' }, [a.artist + '. Tap Save to keep a song on your phone. Your phone will show you when it is ready.']));
-  allBtn = el('button', { type: 'button', className: 'btn-all' }, ['Save all ' + a.songs.length + ' songs']);
-  allBtn.dataset.album = String(ai);
-  allBtn.addEventListener('click', function () { saveAll(ai); });
-  statusEl = el('div', { className: 'status', role: 'status' });
-  page.appendChild(el('div', { className: 'all' }, [
-    allBtn,
-    el('div', { className: 'note' }, ['Use Wi-Fi for this. If your phone asks whether to allow several downloads, tap Allow.']),
-    statusEl
-  ]));
-  showSaving();
-  noteEls = {};
   var list = el('ol');
   a.songs.forEach(function (s) {
-    var note = el('div', { className: 'note' }, wasSaved(s.id) ? ['✓ You tapped Save for this song.'] : []);
-    noteEls[s.id] = note;
-    var saveBtn = el('a', { className: 'btn-save', href: saveUrl(s.id) }, ['Save']);
+    var note = el('div', { className: 'note' }, wasSaved(s.id) ? ['✓ You tapped Save for this song.'] : []);    var saveBtn = el('a', { className: 'btn-save', href: saveUrl(s.id) }, ['Save']);
     saveBtn.addEventListener('click', function () {
       markSaved(s.id);
       note.textContent = '✓ You tapped Save for this song.';
