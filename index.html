@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Music for Moomin</title>
+<style>
+  :root { color-scheme: light; --ink: #1d2433; --paper: #fbf8f1; --line: #cfc8b8; --save: #1e3a8a; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 22px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 20px 16px 48px; }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 10px; }
+  p.help { margin: 0 0 22px; }
+  a.album { display: block; padding: 18px 16px; margin: 0 0 14px; background: #fff; border: 2px solid var(--ink); border-radius: 12px; color: var(--ink); text-decoration: none; }
+  a.album b { display: block; font-size: 26px; line-height: 1.2; }
+  a.album span { display: block; margin-top: 4px; }
+  a.back { display: block; padding: 16px; margin: 0 0 22px; background: var(--ink); color: #fff; border-radius: 12px; text-align: center; font-weight: 700; text-decoration: none; }
+  ol { list-style: none; margin: 0 0 22px; padding: 0; }
+  li { padding: 16px 0; border-top: 2px solid var(--line); }
+  .song { font-weight: 700; font-size: 24px; line-height: 1.2; margin-bottom: 10px; overflow-wrap: anywhere; }
+  a.btn-save { display: flex; min-height: 62px; align-items: center; justify-content: center; font-weight: 700; color: #fff; background: var(--save); border-radius: 12px; text-decoration: none; }
+  .note { margin-top: 8px; font-size: 20px; }
+</style>
+</head>
+<body>
+<main id="page"></main>
+<noscript><p>This page needs JavaScript to work.</p></noscript>
+<script>
+var ALBUMS = [
+{"artist":"John Denver","title":"Rocky Mountain High","songs":[
+{"id":"1UPMZ0ElC5tIUZPucYxwZBqhgQdpJOHv_","title":"Rocky Mountain High"},
+{"id":"1-bl8f1xuBDRdoNF-C_fl5ptcI6uwT8L3","title":"Mother Nature's Son"},
+{"id":"1cRg2_3tNp72j24z66CyaJM8Rz-ufmWUA","title":"Paradise"},
+{"id":"1lz_CyVNCHCZ3j1ZTZZV690lLkaj8qr7b","title":"For Baby (For Bobbie)"},
+{"id":"1W8CL2jMqIFu5FPCRor5fLss_QYluNbSl","title":"Darcy Farrow"},
+{"id":"1KcvlvRPCOlD-7al2fJbnyp5v73HIGpkA","title":"Prisoners"},
+{"id":"1Ehklf9EXxy52FHC2eIuy3iHBzzbP5ezK","title":"Goodbye Again"},
+{"id":"1M1Irm3dbcEci5oykCbZORPvaKdSPjIfi","title":"Season Suite: Summer"},
+{"id":"1u0EqU10qX_vPCr5_48fNSw9gppn6nCVo","title":"Season Suite: Fall"},
+{"id":"1Ivf_0Y7h54jbbQagLWuK5-Q_wAO7ebhd","title":"Season Suite: Winter"},
+{"id":"1crhSZaEq2TlneFGPEkKegmGsGiXz3am1","title":"Season Suite: Late Winter, Early Spring (When Everybody Goes To Mexico)"},
+{"id":"1SoOhmdJ29gRuzLoFQbnldBL0K7Ooto27","title":"Season Suite: Spring"}
+]},
+{"artist":"Charles Aznavour","title":"100 chansons: CD 1","songs":[
+{"id":"1UCZQAvLP9q_thsmMrVE1FfCxL27fRUmK","title":"Comme une maladie"},
+{"id":"1rtK_Mxj0CbsTW2xI_SUFnm5yHtppgSC6","title":"Je hais les dimanches"},
+{"id":"1KcgK9Wj23g2K_FnWInFBZdxIt4Y_766v","title":"Tu n'as plus"},
+{"id":"1p94ylq6UjeoCNWisx-FpViwerTmSDYrG","title":"Sa jeunesse entre ses mains"},
+{"id":"19YJRncXu6MAoezpXkspIMIFiHLm0lhem","title":"Et bâiller et dormir"},
+{"id":"1yHWaKf4AWlrVTzhct37Wr1rgytfUq9nT","title":"L'Émigrant"},
+{"id":"12SJg-uvL1k-xJsY-zMogH4p0jWcQrOxL","title":"Le Chemin de l'éternité"},
+{"id":"1rvrq0p_kc5X3kEbNQrUMzwYAfZH7rOtz","title":"Ce sacré piano"},
+{"id":"1UWDfbtDpyrUaX_mwNZo1gcAZBj_58899","title":"À tout jamais"},
+{"id":"1_dWgDAfVn2R3ieHd_zDI2eh4uQcjEHaF","title":"Après l'amour"},
+{"id":"16KYf99WNNsVTck6_dZ4Uxd4ef2RT_neF","title":"Au creux de mon épaule"},
+{"id":"1M9sY9NEQ2s0STC09QyYeI3R1Xt6i5q5Y","title":"Pour faire une jam"},
+{"id":"1DmhIqxUvY4h6MSwZ248gKfo1kZXDdi3T","title":"Poker"},
+{"id":"1ylFl3LNNKZm6h4i9KNlOUN8-rY58Q_FT","title":"Plus bleu que tes yeux"},
+{"id":"1rJmuB8XBittrZCSC-cMlJh-F4Kq61uH8","title":"Parce que"},
+{"id":"13fHUrIxcDnKTV4DIUOqjwNxSGXqS0-ek","title":"Le Palais de nos chimères"},
+{"id":"1xf3LnYkT5zf_GTy84Zn1fHsqTYqtK56Z","title":"On ne sait jamais"},
+{"id":"1i329Y6Wdtw81UKa3yiEw9Q20LeKMVg5l","title":"J'en déduis que je t'aime"},
+{"id":"1lT-Lzxj-4OEQxr7Ln5OCD3eprST_ZNJh","title":"Une enfant"},
+{"id":"15Nqpdm8f6Na9r36SHDRyr2f8w3B5NcgO","title":"Si je n'avais plus"}
+]},
+{"artist":"Charles Aznavour","title":"100 chansons: CD 2","songs":[
+{"id":"1iwIME2DibWS5TEtJ1A0EfRl3lfXP92aB","title":"Les Deux Guitares"},
+{"id":"1hsjpAzeJ5lgcX-bCZNNBB0R2Ptn-LRPE","title":"Oui"},
+{"id":"1N4NpDUD-0gVka6lii9UhNwZgRk-RIVEU","title":"Les Enfants de la guerre"},
+{"id":"1m_OVYScEgNsCn17-Al_S9UOeoD2U9Atw","title":"Hier encore"},
+{"id":"1C7HPqLkSfSD0pjCgEnA4yrui3CSp-l_d","title":"Les Faux"},
+{"id":"1UR3-_4gA0e24R1dtIdXuTe2ClE0YBWlt","title":"Et pourtant"},
+{"id":"1axl2UY2Q2RH7hoI5CU5jJscEQilIprZX","title":"Et moi dans mon coin"},
+{"id":"1FewakJ6A1-tCHoVc_3TBXLQX_QTrZB5w","title":"Emmenez-moi"},
+{"id":"1X0w4koMzfAzC7RbKOxeUzEODFnmoMBHu","title":"Il te suffirait que je t'aime"},
+{"id":"1gXlnf9yq_eUnHHdB9ykNTba2Kywbd5Zr","title":"Il faut savoir"},
+{"id":"1_BT5xld7pBkLzXDcACxdrVSKFQDJmTMx","title":"Comme des étrangers"},
+{"id":"1d-V9wUxXGbBiwqNAWn-j81Xh6z419MKs","title":"Ce jour tant attendu"},
+{"id":"1memQiFCFsdgxSGfjETGcPVLl2nUO15Sq","title":"Bon anniversaire"},
+{"id":"17NrL7T6EDvJV1NVYizdazgjVAY8Jpdiv","title":"Le Cabotin"},
+{"id":"1iuby1HwX9SIlDzIQxXNRJt50tUnkBMLt","title":"À ma fille"},
+{"id":"18M6eAOb6rLyGM079Ckv5BK5Gqisvibhd","title":"Au printemps tu reviendras"},
+{"id":"1hjBnDCM3RvfW3xwQvN-o-lMH-m85AZ05","title":"Paris au mois d'août"},
+{"id":"1uFL78EumvIIyXV18SqaGBMLEIp_sRjUQ","title":"Non je n'ai rien oublié"},
+{"id":"1M1ryMAJnOUi5GA4KcfLscewkieIOifmv","title":"Marie l'orpheline"},
+{"id":"1ouu1f_x7Bmq5Eix1fZTRFgG84kmZikkv","title":"Jolies mômes de mon quartier"}
+]},
+{"artist":"Charles Aznavour","title":"100 chansons: CD 3","songs":[
+{"id":"1cIdjDx5UrKky0Z6jJDWiPe9gUjhGGDjo","title":"Je te réchaufferai"},
+{"id":"14Xv0erfPHfLZnIHSAmcjSQWkN653VAtb","title":"Je n'oublierai jamais"},
+{"id":"1Xhq623fOJShKpOVC3YAZiVI5shCt4okk","title":"Je m'voyais déjà"},
+{"id":"1y5eYIo1ZiWhtW3iboKOkt71IQSCl7cFx","title":"Pour essayer de faire une chanson"},
+{"id":"1tEs_1uSZ74uaqLvfMbRESsUARKsV9UMl","title":"Tu t'laisses aller"},
+{"id":"1v_r6dM5TVFJbKsLNE075sQoCvnRgIafV","title":"Tout s'en va"},
+{"id":"1R2MSiwlDmLuzvN5TTCiGVlNlUSlvmpeL","title":"Le Temps"},
+{"id":"1_iawy78Egr9ciIvwfG89nYSyNwMnNxIL","title":"Reste"},
+{"id":"15xoMCaOnY62AHRhpkG2Ot96noNa9zsfa","title":"Retiens la nuit"},
+{"id":"1tEkaTx_A2Y3vf1dpxIo_rxZiRtarSrHf","title":"Le Toréador"},
+{"id":"1UCACHbtWdn2ABrZDM7aA3dXEmgO2He29","title":"Je reviens Fanny"},
+{"id":"1d35lsDW1jkQdiYgpPNnnWEXTZAcs1JSu","title":"Les Jours heureux"},
+{"id":"1c3AEm90P1AedXixDJG3u9OVC-1V7EJ_e","title":"Hosanna"},
+{"id":"1mUtZ4L1XkuAWC_ntirYTtXIZa-KPZx0s","title":"Ere"},
+{"id":"1Tx25e-CCRC1eT0zUHPXD2DcfVgks7DjO","title":"Un enfant est né"},
+{"id":"17j-j4Rn1UYBfmWu0y0QL56Gcrw7-6DU3","title":"Un enfant de toi pour Noël"},
+{"id":"1JACsQrFG2PhLMUAqER_Qt5OsNvnPBqM8","title":"J'ai vécu"},
+{"id":"1kIfXiwVoFAxcVnadSdSzXHqwV7ujAxrf","title":"Isabelle"},
+{"id":"1teXTFNtQdbx_m5uXxhbdBmrz4OSs_rR5","title":"Ils sont tombés"},
+{"id":"1KYroX1uSUe3YSGOAwwFxo0yaLL40xEPU","title":"Comme ils disent"}
+]},
+{"artist":"Charles Aznavour","title":"100 chansons: CD 4","songs":[
+{"id":"1UB2O0rGjukR7Q5oITP3yyy-Fifcvpehv","title":"Comme des roses"},
+{"id":"1O8wc5Y9VA13r2DpUl5-o7cTMb4TNu3yf","title":"Avant la guerre"},
+{"id":"1UDZdkox_kn5sviIygOnOQ3uhlUFwMHYV","title":"À ma femme"},
+{"id":"1OnUHwhW1f9Z9elJA2vVasMyS5HE42aZ6","title":"Les amours médicales"},
+{"id":"18S1NvXlwx1-UVPtRFiUzPxa7QmYvkluT","title":"Par gourmandise"},
+{"id":"1coTXiPT9hoVcDzWEPDvLIFu0DBG2h2fA","title":"On se réveillera"},
+{"id":"1ltd3Wkjgltt8myJrdwFBBlRm8M26ohCY","title":"Mourir d'aimer"},
+{"id":"1K8hY3xEP0a4qk_XNLS_BjK6dsZfakKli","title":"Mes emmerdes"},
+{"id":"15UCRMYtr_8qV-zQuMDYYy6kd6lI6a1_y","title":"Liberté"},
+{"id":"18-bPsE2E7vLPNoxEIs_3fDmzCSyh47GG","title":"Me voilà seul"},
+{"id":"1vYPSdoMcUgaO46h7Df147db5fWSsGWog","title":"Mais c'était hier"},
+{"id":"1lUwU_JvYbJMmU5KNVbQkZFYpEdFdwE5U","title":"Je n'ai pas vu le temps passer"},
+{"id":"1KTCtQld8iX0w5ZEDWzFHR4PE3dbTP9qU","title":"Je me raccroche à toi"},
+{"id":"18PV4Gnpq61dAlgH9fhJojAFQicfKqD8R","title":"J'ai vu Paris"},
+{"id":"1llewVKkUxNyMEp-bg1BnQSC32tslvxS7","title":"Les plaisirs démodés"},
+{"id":"1z191GwfDw0tPAW6cQuPUn1a5SSNL3PGn","title":"Je meurs de toi"},
+{"id":"1-QQFIbYVAh7MX5x8OaxCUA5bpH--D4u3","title":"Un par un"},
+{"id":"1bdcrslJCh4EKTiL0zCtwwcVAG6Ekb92q","title":"Un corps"},
+{"id":"1GynGFoWwIS68OfGuLlq3oAaOdd8gn3Ys","title":"Une idée"},
+{"id":"1IS17xE1pYbGxzSdyySteAnv9A9QRlegM","title":"Mon ami, mon Judas"}
+]}
+];
+
+var page = document.getElementById('page');
+
+function saveUrl(id) { return 'https://drive.usercontent.google.com/download?id=' + encodeURIComponent(id) + '&export=download'; }
+function el(tag, props, kids) {
+  var e = document.createElement(tag);
+  for (var k in (props || {})) { e[k] = props[k]; }
+  (kids || []).forEach(function (c) { e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+  return e;
+}
+function wasSaved(id) { try { return localStorage.getItem('saved:' + id) === '1'; } catch (e) { return false; } }
+function markSaved(id) { try { localStorage.setItem('saved:' + id, '1'); } catch (e) {} }
+
+function showFront() {
+  document.title = 'Music for Moomin';
+  page.textContent = '';
+  page.appendChild(el('h1', {}, ['Music for Moomin']));
+  page.appendChild(el('p', { className: 'help' }, ['Tap an album to see its songs.']));
+  ALBUMS.forEach(function (a, i) {
+    page.appendChild(el('a', { className: 'album', href: '#album-' + (i + 1) }, [
+      el('b', {}, [a.title]),
+      el('span', {}, [a.artist + ' · ' + a.songs.length + ' songs'])
+    ]));
+  });
+  window.scrollTo(0, 0);
+}
+
+function backLink() { return el('a', { className: 'back', href: '#' }, ['← Back to all the music']); }
+
+function showAlbum(ai) {
+  var a = ALBUMS[ai];
+  document.title = a.title;
+  page.textContent = '';
+  page.appendChild(backLink());
+  page.appendChild(el('h1', {}, [a.title]));
+  page.appendChild(el('p', { className: 'help' }, [a.artist + '. Tap Save under a song to keep it on your phone. Your phone will show you when it is ready.']));
+  var list = el('ol');
+  a.songs.forEach(function (s) {
+    var note = el('div', { className: 'note' }, wasSaved(s.id) ? ['✓ You tapped Save for this song.'] : []);
+    var saveBtn = el('a', { className: 'btn-save', href: saveUrl(s.id) }, ['Save']);
+    saveBtn.addEventListener('click', function () {
+      markSaved(s.id);
+      note.textContent = '✓ You tapped Save for this song.';
+    });
+    list.appendChild(el('li', {}, [el('div', { className: 'song' }, [s.title]), saveBtn, note]));
+  });
+  page.appendChild(list);
+  page.appendChild(backLink());
+  window.scrollTo(0, 0);
+}
+
+function route() {
+  var m = /^#album-(\d+)$/.exec(location.hash);
+  var i = m ? parseInt(m[1], 10) - 1 : -1;
+  if (i >= 0 && i < ALBUMS.length) { showAlbum(i); } else { showFront(); }
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
